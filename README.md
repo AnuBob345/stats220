@@ -27,7 +27,7 @@ I love anime so hear is a list of my favourites:
 
 - [MyAnimeList Profile](https://myanimelist.net/profile/lord_bobbili)
 - [Canvas](https://canvas.auckland.ac.nz/)
-- [Spotify]([https://www.markdownguide.org/basic-syntax/](https://open.spotify.com/))
+- [Spotify](https://open.spotify.com/)
 
 ## A Meme That Captures My Current Mood
 
