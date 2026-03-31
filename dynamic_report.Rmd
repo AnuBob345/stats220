@@ -1,0 +1,118 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
+```{css}
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2c3e50;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: auto;
+}
+
+h2 {
+  color: #2980b9;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 10px;
+  margin-top: 30px;
+}
+
+.summary-box {
+  background-color: #f8f9fa;
+  border-left: 5px solid #2980b9;
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 4px;
+}
+
+strong {
+  color: #e67e22;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: #eee;
+  margin: 40px 0;
+}
+
+```
+
+# YouTube Advertisement Data Report
+
+```{r}
+library(tidyverse)
+
+logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vRzVwmMXDdDln9a9FVcRRyh4VUfz_E5p01sfutHnePvIyArcrRL7a6niXcMrOsUlVZ9hY6CIrSvojh3/pub?gid=1244197692&single=true&output=csv")
+
+latest_data <- logged_data %>%
+  rename(
+    time = Timestamp,
+    ad_type = `What type of advertisement was it?`,
+    ad_length = `How long was the ad in seconds?`,
+    ad_category = `What was the ad advertising?`,
+    ad_location = `Where in the video did the advertisement appear`,
+    video_views = `How many views did the video that the ad appeared in have?`,
+    device = `What device were you watching the video on?`,
+    video_category = `What was the category of the video you were watching?`
+  )
+
+# Calculate summary values for the dynamic text
+max_length  <- max(latest_data$ad_length)
+avg_length <- round(mean(latest_data$ad_length), 2)
+total_ads   <- length(latest_data$ad_length)
+```
+
+<div class="summary-box">
+## Data Collection Overview
+For this project, I monitored my YouTube consumption to analyze the types of advertisements served to me. In total, I recorded `r total_ads` different advertisements. Across all observations, the average duration of an advertisement was `r avg_length` seconds with the longest one being `r max_length` seconds long.
+</div>
+
+## Comparison of Ad Types by Device
+The following chart shows the distribution of advertisement types (skippable vs. non-skippable) across the different devices I used. This graph was the main inspiration for choosing this observation as I wanted to see whether I was receiving a different proportion on non-skippable ads based on the device I was using.
+
+```{r}
+ggplot(latest_data, aes(x = device, fill = ad_type)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Ad Types by Device",
+       x = "Device",
+       y = "Count of Ads",
+       fill = "Ad Type") +
+  theme_minimal()
+```
+
+## Relationship Between Video Topics and Ad Categories
+This chart explores the connection between the content of the video being watched and the category of the advertisement served. This is interesting to see as it shows how the contents of ads changed based on the type of video you watched.
+
+```{r}
+ggplot(latest_data, aes(x = video_category, fill = ad_category)) +
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 45,
+                                   hjust = 1)) +
+  labs(title = "Ad Categories vs Video Topics",
+       x = "Video Category",
+       y = "Number of Ads",
+       fill = "Ad Content")
+```
+
+## Average Ad Length by Video Views
+This chart below explores the relationship between the length of an ad and how many views the video it appeared on had. This is interesting as we can see if different video with higher views tend to have longer ads as they know more people will be seeing it.
+
+```{r}
+avg_length_data <- latest_data %>%
+  group_by(video_views) %>%
+  summarise(mean_length = mean(ad_length))
+
+ggplot(avg_length_data, aes(x = video_views, y = mean_length)) +
+  geom_col(fill = "#FF0000") +
+  labs(title = "Average Ad Length by Video Popularity",
+       x = "Video Views",
+       y = "Average Seconds")
+```
