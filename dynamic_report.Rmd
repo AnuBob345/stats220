@@ -24,14 +24,6 @@ h2 {
   margin-top: 30px;
 }
 
-.summary-box {
-  background-color: #f8f9fa;
-  border-left: 5px solid #2980b9;
-  padding: 15px;
-  margin: 20px 0;
-  border-radius: 4px;
-}
-
 strong {
   color: #e67e22;
 }
@@ -70,10 +62,8 @@ avg_length <- round(mean(latest_data$ad_length), 2)
 total_ads   <- length(latest_data$ad_length)
 ```
 
-<div class="summary-box">
 ## Data Collection Overview
 For this project, I monitored my YouTube consumption to analyze the types of advertisements served to me. In total, I recorded `r total_ads` different advertisements. Across all observations, the average duration of an advertisement was `r avg_length` seconds with the longest one being `r max_length` seconds long.
-</div>
 
 ## Comparison of Ad Types by Device
 The following chart shows the distribution of advertisement types (skippable vs. non-skippable) across the different devices I used. This graph was the main inspiration for choosing this observation as I wanted to see whether I was receiving a different proportion on non-skippable ads based on the device I was using.
